@@ -54,10 +54,10 @@ cave_list = [Cave1, Cave2, Cave3, Cave4, Cave5, Cave6, Cave7, Cave8, Cave9,
              Cave10, Cave11, Cave12, Cave13, Cave14, Cave15, Cave16, Cave17,
              Cave18, Cave19, Cave20]
 
-for item in cave_list:
-    cave_list[item] = random.choice(point_list)
-    cave_list.remove(item)
-    point_list.remove(cave_list[item])
-    
-print(Cave1)
-print(Cave5)
+for i in range(0, 20, 1):
+    cave_list[i] = random.choice(point_list)
+    print("Cave", i, "Value: ", cave_list[i])
+    point_list.remove(cave_list[i])
+
+print(cave_list)
+print(point_list)
