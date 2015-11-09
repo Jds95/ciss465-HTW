@@ -1,0 +1,25 @@
+#---------------------------------------------------------------------
+# CISS465 Project 3 - Jesse and Nate
+#---------------------------------------------------------------------
+
+# Variable locations according to dodecahedron picture in files
+POINT1 = 1
+POINT2 = 2
+POINT3 = 3
+POINT4 = 4
+POINT5 = 5
+POINT6 = 6
+POINT7 = 7
+POINT8 = 1
+POINT9 = 2
+POINT10 = 3
+POINT11 = 4
+POINT12 = 5
+POINT13 = 6
+POINT14 = 7
+POINT15 = 1
+POINT16 = 2
+POINT17 = 3
+POINT18 = 4
+POINT19 = 5
+POINT20 = 6
