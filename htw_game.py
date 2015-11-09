@@ -5,27 +5,7 @@
 CAVE_NUMBERS = 20
 
 import random
-
-# Class for Caves
-class Cave:
-    # Constructor sets the value(location of cave to 0 or NULL)
-    def __init__(self):
-        self.__value = 0
-    # Function to set Cave location to value
-    def set_value(self, number):
-        self.__value = number
-    # Return value as in "You are in Cave: " Cave.get_value()
-    def get_value(self):
-        return self.__value
-    # Set the connections between the rooms via chart
-    def set_connection(self, list):
-        self.__connection =[]
-        for item in list:
-            self.__connection.append(item)
-    def get_connection(self):
-        return self.__connection
-
-
+import Cave
 
 # List containing all the Locations for caves
 point_list = []
@@ -36,8 +16,9 @@ for i in range (CAVE_NUMBERS):
 # List containing all the Caves
 cave_list = []
 
+# Loop to add caves to cave_list
 for i in range (CAVE_NUMBERS):
-    cave = Cave()
+    cave = Cave.Cave()
     cave_list.append(cave)
 
 # Loop to go through cave_list and assign it a random value from
@@ -47,6 +28,6 @@ for i in range (CAVE_NUMBERS):
     point_list.remove(cave_list[i].get_value())
 
 # Test print to see Cave Objects Values/(other variabes in the future)
-for i in range(CAVE_NUMBERS):
-    print("Cave", i + 1, "Value:", cave_list[i].get_value())
+for item in cave_list:
+    print(item)
     
