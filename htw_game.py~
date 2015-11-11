@@ -2,62 +2,99 @@
 # CISS465 Project 3 - Jesse and Nate
 #---------------------------------------------------------------------
 
+CAVE_NUMBERS = 20
+
 import random
-# Variable locations according to dodecahedron picture in files
-POINT1 = 1
-POINT2 = 2
-POINT3 = 3
-POINT4 = 4
-POINT5 = 5
-POINT6 = 6
-POINT7 = 7
-POINT8 = 8
-POINT9 = 9
-POINT10 = 10
-POINT11 = 11
-POINT12 = 12
-POINT13 = 13
-POINT14 = 14
-POINT15 = 15
-POINT16 = 16
-POINT17 = 17
-POINT18 = 18
-POINT19 = 19
-POINT20 = 20
-# Cave Variables initialized to 0
-Cave1 = 0
-Cave2 = 0
-Cave3 = 0
-Cave4 = 0
-Cave5 = 0
-Cave6 = 0
-Cave7 = 0
-Cave8 = 0
-Cave9 = 0
-Cave10 = 0
-Cave11 = 0
-Cave12 = 0
-Cave13 = 0
-Cave14 = 0
-Cave15 = 0
-Cave16 = 0
-Cave17 = 0
-Cave18 = 0
-Cave19 = 0
-Cave20 = 0
+import Cave
 
-point_list = [POINT1, POINT2, POINT3, POINT4, POINT5, POINT6, POINT7, POINT8,
-              POINT9, POINT10, POINT11, POINT12, POINT13, POINT14, POINT15,
-              POINT16, POINT17, POINT18, POINT19, POINT20]
+def cave_generation(cave_list, cave_list_copy, cave_check, game_start):
 
-cave_list = [Cave1, Cave2, Cave3, Cave4, Cave5, Cave6, Cave7, Cave8, Cave9,
-             Cave10, Cave11, Cave12, Cave13, Cave14, Cave15, Cave16, Cave17,
-             Cave18, Cave19, Cave20]
+        
+    # List containing all the Locations for caves
+    point_list = []
 
-for i in range(0, 20, 1):
-    cave_list[i] = random.choice(point_list)
-    print("Cave", i, "Value: ", cave_list[i])
-    point_list.remove(cave_list[i])
+    for i in range (CAVE_NUMBERS):
+        point_list.append(i + 1)
 
-print(cave_list)
-print(point_list)
+    # Loop to add caves to cave_list
+    for i in range (CAVE_NUMBERS):
+        cave = Cave.Cave()
+        cave_list.append(cave)
+        
+    # Loop to go through cave_list and assign it a random value from
+    # the point_list, then removes that value from the point_list
+    for i in range (CAVE_NUMBERS):
+        cave_list[i].set_value(random.choice(point_list))
+        point_list.remove(cave_list[i].get_value())
+        
+    cave_list_copy += cave_list
+            
+    # Set up some initial connections
+    for item in cave_list:
+        while(item.is_connection_empty == True):
+            random_cave = random.choice(cave_list_copy)
+            if (random_cave.get_value() == item.get_value()):
+                continue
+            if (random_cave.is_connection_full == True):
+                continue
+            if (random_cave.is_connection_empty() == False):
+                if (random_cave.get_value() not in item.get_connection()):
+                    item.add_connection(random_cave.get_value())
+                    random_cave.add_connection(item.get_value())
+
+# If cave is full on connections, remove it from list of random_cave choices
+    for item in cave_list:
+        if (item.is_connection_full()):
+            cave_list_copy.remove(item)
+
+    for item in cave_list_copy:
+        while (item.is_connection_full() == False):
+            random_cave = random.choice(cave_list_copy)
+            if (random_cave.get_value() == item.get_value()):
+                continue
+            if (random_cave.is_connection_full() == True):
+                cave_list_copy.remove(random_cave)
+                continue
+            else:
+                if (random_cave.get_value() not in item.get_connection()):
+                    item.add_connection(random_cave.get_value())
+                    random_cave.add_connection(item.get_value())
+
+    for item in cave_list:
+        if (item.is_connection_full() == False):
+            cave_check.append(item)
+
+    counter = 0
+    for item in cave_check:
+        while (item.is_connection_full() == False):
+            if (counter > 500):
+                game_start = False
+                break
+            random_cave = random.choice(cave_check)
+            if (random_cave.get_value() == item.get_value()):
+                counter = counter + 1
+                continue
+            if (random_cave.is_connection_full() == True):
+                continue
+            elif (random_cave.get_value() not in item.get_connection()):
+                item.add_connection(random_cave.get_value())
+                random_cave.add_connection(item.get_value())
+                
+    game_start = True
+
+
+# List containing all the Caves
+cave_list = []
+cave_check = []
+cave_list_copy = []
+game_start = False
+
+# Put inside a loop to generate until it works
+while (game_start == False):
+    cave_generation(cave_list, cave_list_copy, cave_check, game_start)
+
+
+print("Cave List Print")
+# Test print to see Cave Objects Values/(other variabes in the future)
+for item in cave_list:
+    print(item)
