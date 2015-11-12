@@ -69,7 +69,7 @@ class Cave:
         else:
             return False
         
-    # Default print statement, can add booleans in later
+    # Default print statement
     def __str__(self):
         rep = "Cave: "
         rep += str(self.__value)
