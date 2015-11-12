@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
 #---------------------------------------------------------------------
 # CISS465 Project 3 - Jesse and Nate
 #---------------------------------------------------------------------
 
 CAVE_NUMBERS = 20
 
+import cgi
 import random
 import Cave
 
@@ -89,5 +91,11 @@ bat_generation(cave_list, cave_list_copy)
 wumpus_generation(cave_list, cave_list_copy)
 
 # Test print to see Cave Objects Values/(other variabes in the future)
+print('Content-Type: text/html')
+print()
+print('<html><body>')
 for item in cave_list:
     print(item)
+    print('<br />')
+print('</body></html>')
+
