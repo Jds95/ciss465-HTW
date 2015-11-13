@@ -113,10 +113,7 @@ bat_generation(cave_list, cave_list_copy)
 wumpus_generation(cave_list, cave_list_copy)
 player_start(cave_list, spawn_list)
 
-for item in cave_list:
-    print(item)
 
-"""
 # Game done variable
 done = False
 
@@ -149,7 +146,7 @@ while (done == False):
         print("No shooting function coded yet")
 
 
-        
+"""        
 # Test print to see Cave Objects Values/(other variabes in the future)
 print('Content-Type: text/html')
 print()
@@ -158,5 +155,5 @@ for item in cave_list:
     print(item)
     print('<br />')
 print('</body></html>')
-
 """
+
