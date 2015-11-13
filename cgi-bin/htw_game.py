@@ -28,25 +28,23 @@ def cave_generation(cave_list, cave_list_copy):
     for i in range (CAVE_NUMBERS):
         cave_list[i].set_value(random.choice(point_list))
         point_list.remove(cave_list[i].get_value())
-        
+
     cave_list_copy = cave_list[:]
-            
-    # Set up connections for the caves
-    for i in range(3):
-        for item in cave_list:
-            if (item not in cave_list_copy):
-                continue
-            item_copy = item
-            if (item in cave_list_copy):
-                cave_list_copy.remove(item)
-                random_cave = random.choice(cave_list_copy)
-                item_copy.add_connection(random_cave.get_value())
-                random_cave.add_connection(item_copy.get_value())
-                if (random_cave in cave_list_copy):
-                    cave_list_copy.remove(random_cave)
 
-        cave_list_copy = cave_list[:]
-
+    # Set up inital dual way connections
+    for i, item in enumerate(cave_list):
+        item.add_connection(cave_list[(i + 1) % CAVE_NUMBERS].get_value())
+        cave_list[(i + 1) % CAVE_NUMBERS].add_connection(item.get_value())
+        
+    # Set up final connections for caves
+    for i, item in enumerate(cave_list):
+        if item not in cave_list_copy:
+            continue
+        item.add_connection(cave_list[(i + 2) % CAVE_NUMBERS].get_value())
+        cave_list[(i + 2) % CAVE_NUMBERS].add_connection(item.get_value())
+        cave_list_copy.remove(cave_list[(i + 2) % CAVE_NUMBERS])
+        cave_list_copy.remove(item)
+    
 # Function to generate random pits
 def pit_generation(cave_list):
     pit_generate = random.sample(cave_list, 2)
@@ -115,7 +113,10 @@ bat_generation(cave_list, cave_list_copy)
 wumpus_generation(cave_list, cave_list_copy)
 player_start(cave_list, spawn_list)
 
+for item in cave_list:
+    print(item)
 
+"""
 # Game done variable
 done = False
 
@@ -158,3 +159,4 @@ for item in cave_list:
     print('<br />')
 print('</body></html>')
 
+"""

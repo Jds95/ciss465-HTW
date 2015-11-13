@@ -8,6 +8,18 @@ class Cave:
         self.__has_pit = False
         self.__has_bat = False
         
+    # Function to print that a pit is near
+    def pit_warning(self):
+        print("A pit is close!")
+
+    # Function to print that a bat is near
+    def bat_warning(self):
+        print("Bats are close!")
+
+    # Function to print that a pit is near
+    def wumpus_warning(self):
+        print("The Wumpus is close")
+   
     # Function to set Cave location to value
     def set_value(self, number):
         self.__value = number    
