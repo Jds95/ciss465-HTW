@@ -7,7 +7,8 @@ class Cave:
         self.__has_wumpus = False
         self.__has_pit = False
         self.__has_bat = False
-        
+
+            
     # Function to print that a pit is near
     def pit_warning(self):
         print("A pit is close!")
