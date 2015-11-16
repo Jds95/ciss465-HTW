@@ -150,8 +150,17 @@ def game_over_check(Player, cave_list):
             if item.get_wumpus():
                 print("You got eaten by the Wumpus, game over")
                 return True
-
     return False
+
+def teleport_check(Player, cave_list):
+    for item in cave_list:
+        if Player.get_room() == item.get_value():
+            if item.get_bat:
+                copy_cave = cave_list[:]
+                copy_cave.remove(item)
+                random_cave = random.sample(copy_cave)
+                Player.set_room(random_cave.get_value())
+
 # List containing all the Caves
 cave_list = []
 cave_check = []
@@ -198,6 +207,7 @@ while not done:
         # Set Player's current room to user input
         Player.clear_room()
         Player.set_room(user_input)
+        teleport_check(Player, cave_list)
         if game_over_check(Player, cave_list):
             break
         
@@ -212,12 +222,14 @@ while not done:
             continue
         if len(shoot_list) < 5 and len(shoot_list) > 0:
             valid_arrow_shot(Player, cave_list, shoot_list, done)
-
-        Player.lose_arrow()
-        if Player.arrow_check() == 0:
-            print("Out of arrows, game over")
-            done = True
-
+            
+        if len(shoot_list) != 0:
+            Player.lose_arrow()
+            if Player.arrow_check() == 0:
+                print("Out of arrows, game over")
+                done = True
+        else:
+            print("You didn't specify what rooms for arrow path")
 """        
 # Test print to see Cave Objects Values/(other variabes in the future)
 print('Content-Type: text/html')
