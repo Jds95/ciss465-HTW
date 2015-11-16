@@ -178,5 +178,14 @@ print('<html><body>')
 print('\n', "If at anytime you wish to quit, type quit or q<br />")
 print("You are in Room:", Player.get_room(), end="<br />")
 print("You can travel to:", room_connection)
+
+print("""
+   <br />
+   <form method="get" action="/cgi-bin/htw_game.py">
+        Move to room number: <input type="text" name="room">
+        <input type="submit" value="Submit">
+    </form> 
+""")
+
 print('</body></html>')
 

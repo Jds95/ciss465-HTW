@@ -10,6 +10,8 @@ import random
 import Cave
 import Player
 
+form = cgi.FieldStorage()
+
 def cave_generation(cave_list, cave_list_copy):
     
     # List containing all the Locations for caves
@@ -29,7 +31,7 @@ def cave_generation(cave_list, cave_list_copy):
         cave_list[i].set_value(random.choice(point_list))
         point_list.remove(cave_list[i].get_value())
 
-    cave_list_copy = cave_list[:]
+    cave_list_copgy = cave_list[:]
 
     # Set up inital dual way connections
     for i, item in enumerate(cave_list):
@@ -160,46 +162,36 @@ spawn_list = []
 
 # Create Player Variable/Object
 Player = Player.Player()
+print("Content-Type: text/html")
+print()
+print("<html><body>")
+print("If at anytime you wish to quit, type quit or q<br />")
 
+# Variable to store what rooms the player can connect to
+room_connection = get_player_route(Player, cave_list)
+warning_message_check(Player, cave_list)
+goToRoom = form.getvalue('room')
+Player.set_room(goToRoom)
+print("You are in Room:", Player.get_room(), end="<br />")
+print("You can travel to:", room_connection)
 
-# Function calls to generate the game and player
-cave_generation(cave_list, cave_list_copy)
-pit_generation(cave_list)
-bat_generation(cave_list, cave_list_copy)
-wumpus_generation(cave_list, cave_list_copy)
-player_start(cave_list, spawn_list)
-
-
-# Game done variable
-done = False
-
-print('\n', "If at anytime you wish to quit, type quit or q\n")
-
-# Game Loop
-while not done:
-    # Variable to store what rooms the player can connect to
-    room_connection = get_player_route(Player, cave_list)
-    warning_message_check(Player, cave_list)
-    print("You are in Room:", Player.get_room(), end=" ")
-    print("You can travel to:", room_connection)
-    
-    print("You can shoot an arrow or move: ")
-    # Gather user input if moving or shooting
-    decision=input("Which would you like to do?: ")
-    print()
-    if (decision.lower() == "quit" or decision == "q"):
-        done = True
-    # If choice was to move, get input
-    if (decision.lower() == "move" or decision == "m"):
-        user_input = int(input("Which room would you like to travel to? "))
-        # check to see if user input was a correct room to travel
-        if (user_input not in room_connection):
-            continue
-        # Set Player's current room to user input
-        Player.clear_room()
-        Player.set_room(user_input)
-        if game_over_check(Player, cave_list):
-            break
+"""print("You can shoot an arrow or move: ")
+# Gather user input if moving or shooting
+decision=input("Which would you like to do?: ")
+print()
+if (decision.lower() == "quit" or decision == "q"):
+    done = True
+# If choice was to move, get input
+if (decision.lower() == "move" or decision == "m"):
+    user_input = int(input("Which room would you like to travel to? "))
+    # check to see if user input was a correct room to travel
+    if (user_input not in room_connection):
+        continue
+    # Set Player's current room to user input
+    Player.clear_room()
+    Player.set_room(user_input)
+    if game_over_check(Player, cave_list):
+        break
         
     # If choice was to shoot, gather input, valid check, game winning check
     if decision.lower() == "shoot" or decision == "s":
@@ -217,7 +209,7 @@ while not done:
         if Player.arrow_check() == 0:
             print("Out of arrows, game over")
             done = True
-
+"""
 """        
 # Test print to see Cave Objects Values/(other variabes in the future)
 print('Content-Type: text/html')
