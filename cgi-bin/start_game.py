@@ -10,10 +10,8 @@ import random
 import Cave
 import Player
 
-form = cgi.FieldStorage()
-
 def cave_generation(cave_list, cave_list_copy):
-    
+  
     # List containing all the Locations for caves
     point_list = []
 
@@ -31,7 +29,7 @@ def cave_generation(cave_list, cave_list_copy):
         cave_list[i].set_value(random.choice(point_list))
         point_list.remove(cave_list[i].get_value())
 
-    cave_list_copgy = cave_list[:]
+    cave_list_copy = cave_list[:]
 
     # Set up inital dual way connections
     for i, item in enumerate(cave_list):
@@ -154,20 +152,6 @@ def game_over_check(Player, cave_list):
                 return True
 
     return False
-
-# Function to check to see if teleport by bats was triggered
-def teleport_check(Player, cave_list):
-    for item in cave_list:
-        if Player.get_room() == item.get_value():
-            if item.get_bat:
-                item_copy = item
-                copy_cave = cave_list[:]
-                copy_cave.remove(item)
-                random_cave = random.sample(copy_cave)
-                Player.set_room(random_cave.get_value())
-                copy_cave.append(item_copy)
-
-
 # List containing all the Caves
 cave_list = []
 cave_check = []
@@ -176,61 +160,32 @@ spawn_list = []
 
 # Create Player Variable/Object
 Player = Player.Player()
-print("Content-Type: text/html")
-print()
-print("<html><body>")
-print("If at anytime you wish to quit, type quit or q<br />")
 
-# Variable to store what rooms the player can connect to
+
+# Function calls to generate the game and player
+cave_generation(cave_list, cave_list_copy)
+pit_generation(cave_list)
+bat_generation(cave_list, cave_list_copy)
+wumpus_generation(cave_list, cave_list_copy)
+player_start(cave_list, spawn_list)
+
+# Creates list of rooms that are linked
 room_connection = get_player_route(Player, cave_list)
-warning_message_check(Player, cave_list)
-goToRoom = form.getvalue('room')
-Player.set_room(goToRoom)
+print('Content-type: text/html')
+print()
+
+print('<html><body>')
+print('\n', "If at anytime you wish to quit, type quit or q<br />")
 print("You are in Room:", Player.get_room(), end="<br />")
 print("You can travel to:", room_connection)
 
-"""print("You can shoot an arrow or move: ")
-# Gather user input if moving or shooting
-decision=input("Which would you like to do?: ")
-print()
-if (decision.lower() == "quit" or decision == "q"):
-    done = True
-# If choice was to move, get input
-if (decision.lower() == "move" or decision == "m"):
-    user_input = int(input("Which room would you like to travel to? "))
-    # check to see if user input was a correct room to travel
-    if (user_input not in room_connection):
-        continue
-    # Set Player's current room to user input
-    Player.clear_room()
-    Player.set_room(user_input)
-    teleport_check(Player, cave_list)
-    if game_over_check(Player, cave_list):
-        break
-        
-    # If choice was to shoot, gather input, valid check, game winning check
-    if decision.lower() == "shoot" or decision == "s":
-        shoot_list = []
-        user_input = input("Enter room chain to shoot arrow: ")
-        for num in user_input.split():
-            shoot_list.append(int(num))
-        if len(shoot_list) == 1 and shoot_list[0] == Player.get_room():
-            print("You shot an arrow in current room, you pick up the arrow")
-            continue
-        if len(shoot_list) < 5 and len(shoot_list) > 0:
-            valid_arrow_shot(Player, cave_list, shoot_list, done)
-        Player.lose_arrow()
-        if Player.arrow_check() == 0:
-            print("Out of arrows, game over")
-            done = True
-"""
-"""        
-# Test print to see Cave Objects Values/(other variabes in the future)
-print('Content-Type: text/html')
-print()
-print('<html><body>')
-for item in cave_list:
-    print(item)
-    print('<br />')
+print("""
+   <br />
+   <form method="get" action="/cgi-bin/htw_game.py">
+        Move to room number: <input type="text" name="room">
+        <input type="submit" value="Submit">
+    </form> 
+""")
+
 print('</body></html>')
-"""
+
