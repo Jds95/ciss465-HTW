@@ -9,8 +9,18 @@ import cgi
 import random
 import Cave
 import Player
+import os
+import http.cookies
 
 form = cgi.FieldStorage()
+
+cookie_string = os.environ.get('HTTP_COOKIE')
+
+if cookie_string == '':
+    output = "I don't see a cookie."
+else:
+    cookie = http.cookies.SimpleCookie()
+    cookie.load(cookie_string)
 
 def cave_generation(cave_list, cave_list_copy):
     
@@ -31,7 +41,7 @@ def cave_generation(cave_list, cave_list_copy):
         cave_list[i].set_value(random.choice(point_list))
         point_list.remove(cave_list[i].get_value())
 
-    cave_list_copgy = cave_list[:]
+    cave_list_copy = cave_list[:]
 
     # Set up inital dual way connections
     for i, item in enumerate(cave_list):
@@ -170,6 +180,11 @@ def teleport_check(Player, cave_list):
 
 # List containing all the Caves
 cave_list = []
+
+for i in range(CAVE_NUMBERS - 1):
+	cave_list.append(cookie[str(i)].value)
+#cave_list.append(cookie['20'].value)
+
 cave_check = []
 cave_list_copy = []
 spawn_list = []
@@ -188,6 +203,7 @@ goToRoom = form.getvalue('room')
 Player.set_room(goToRoom)
 print("You are in Room:", Player.get_room(), end="<br />")
 print("You can travel to:", room_connection)
+print(output)
 
 """print("You can shoot an arrow or move: ")
 # Gather user input if moving or shooting

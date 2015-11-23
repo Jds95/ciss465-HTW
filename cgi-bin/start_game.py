@@ -5,10 +5,15 @@
 
 CAVE_NUMBERS = 20
 
+import http.cookies
 import cgi
 import random
 import Cave
 import Player
+import os
+
+cookie = http.cookies.SimpleCookie()
+
 
 def cave_generation(cave_list, cave_list_copy):
   
@@ -168,6 +173,12 @@ pit_generation(cave_list)
 bat_generation(cave_list, cave_list_copy)
 wumpus_generation(cave_list, cave_list_copy)
 player_start(cave_list, spawn_list)
+
+# Storing caves as a cookie
+for i in range(CAVE_NUMBERS):
+	cookie[str(i)] = cave_list[i]
+
+print(cookie)
 
 # Creates list of rooms that are linked
 room_connection = get_player_route(Player, cave_list)
