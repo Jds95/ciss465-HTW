@@ -26,6 +26,15 @@ def caveCopier(cave_list, morsel):
 	cave = Cave.Cave()
 	x = morsel.split(".")
 	cave.set_value(int(x[0]))
+
+    # Converts cave string into list of elements
+	x[1] = x[1].lstrip('[')
+	x[1] = x[1].rstrip(']')
+	x[1] = x[1].replace(' ', '')
+	x[1] = x[1].split(',')
+	cave.add_connection(int(x[1][0]))
+	cave.add_connection(int(x[1][1]))
+	cave.add_connection(int(x[1][2]))
 	
 	if x[2][0] == 'T':
 		cave.set_pit(True)
@@ -225,12 +234,6 @@ goToRoom = form.getvalue('room')
 #Player.set_room(goToRoom)
 #print("You are in Room:", Player.get_room(), end="<br />")
 #print("You can travel to:", room_connection)
-
-for i in range(CAVE_NUMBERS - 1):
-	print(cave_list[i])
-	print("<br />")
-	print(cookie[str(i)].value)
-	print("<br />")
 
 """print("You can shoot an arrow or move: ")
 # Gather user input if moving or shooting
