@@ -47,6 +47,9 @@ class Cave:
 
     # Fucntion to set Wumpus
     def set_wumpus(self, boolean):
+        if boolean == False:
+            self.__has_wumpus = False
+            return
         self.__has_wumpus = True
 
     # Fucntion to get Wumpus boolean
@@ -81,6 +84,19 @@ class Cave:
             return True
         else:
             return False
+
+    # Creates seed for cave copying (illiterative)
+    def caveCopyCreator(self):
+        rep = str(self.__value)
+        rep += "."
+        rep += str(self.__connection)
+        rep += "."
+        rep += str(self.__has_pit)
+        rep += "."
+        rep += str(self.__has_bat)
+        rep += "."
+        rep += str(self.__has_wumpus)
+        return rep
         
     # Default print statement
     def __str__(self):

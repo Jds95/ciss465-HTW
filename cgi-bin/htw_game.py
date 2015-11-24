@@ -22,6 +22,28 @@ else:
     cookie = http.cookies.SimpleCookie()
     cookie.load(cookie_string)
 
+def caveCopier(cave_list, morsel):
+	cave = Cave.Cave()
+	x = morsel.split(".")
+	cave.set_value(int(x[0]))
+	
+	if x[2][0] == 'T':
+		cave.set_pit(True)
+	else:
+		cave.set_pit(False)
+	
+	if x[3][0] == 'T':
+		cave.set_bat(True)
+	else:
+		cave.set_bat(False)
+
+	if x[4][0] == 'T':
+		cave.set_wumpus(True)
+	else:
+		cave.set_wumpus(False)
+	
+	cave_list.append(cave)
+
 def cave_generation(cave_list, cave_list_copy):
     
     # List containing all the Locations for caves
@@ -56,6 +78,8 @@ def cave_generation(cave_list, cave_list_copy):
         cave_list[(i + 2) % CAVE_NUMBERS].add_connection(item.get_value())
         cave_list_copy.remove(cave_list[(i + 2) % CAVE_NUMBERS])
         cave_list_copy.remove(item)
+
+	
     
 # Function to generate random pits
 def pit_generation(cave_list):
@@ -182,28 +206,31 @@ def teleport_check(Player, cave_list):
 cave_list = []
 
 for i in range(CAVE_NUMBERS - 1):
-	cave_list.append(cookie[str(i)].value)
-#cave_list.append(cookie['20'].value)
+	caveCopier(cave_list, cookie[str(i)].value)
 
 cave_check = []
 cave_list_copy = []
 spawn_list = []
 
 # Create Player Variable/Object
-Player = Player.Player()
 print("Content-Type: text/html")
 print()
 print("<html><body>")
 print("If at anytime you wish to quit, type quit or q<br />")
 
 # Variable to store what rooms the player can connect to
-room_connection = get_player_route(Player, cave_list)
-warning_message_check(Player, cave_list)
+#room_connection = get_player_route(Player, cave_list)
+#warning_message_check(Player, cave_list)
 goToRoom = form.getvalue('room')
-Player.set_room(goToRoom)
-print("You are in Room:", Player.get_room(), end="<br />")
-print("You can travel to:", room_connection)
-print(output)
+#Player.set_room(goToRoom)
+#print("You are in Room:", Player.get_room(), end="<br />")
+#print("You can travel to:", room_connection)
+
+for i in range(CAVE_NUMBERS - 1):
+	print(cave_list[i])
+	print("<br />")
+	print(cookie[str(i)].value)
+	print("<br />")
 
 """print("You can shoot an arrow or move: ")
 # Gather user input if moving or shooting
