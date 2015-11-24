@@ -17,7 +17,10 @@ class Player:
     def get_room(self):
         return self.__room_location[0]
 
-    # Function to decrement player arrow, and check boolean for has_arrows
+    def set_arrows(self, arrow):
+        self.__arrows = arrow
+
+	# Function to decrement player arrow, and check boolean for has_arrows
     def lose_arrow(self):
         if (self.__arrows > 0):
             self.__arrows -= 1
@@ -32,6 +35,15 @@ class Player:
     # Fucntion to check if player has arrows
     def arrow_check(self):
         return self.__has_arrows
+
+    # Player proliferation producer
+    def playerCopyCreator(self):
+        rep = str(self.__arrows)
+        rep += '.'
+        rep += str(self.__has_arrows)
+        rep += '.'
+        rep += str(self.__room_location[0])
+        return rep
 
     # Default print statement
     def __str__(self):

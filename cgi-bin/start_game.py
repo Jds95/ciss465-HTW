@@ -177,7 +177,7 @@ player_start(cave_list, spawn_list)
 for i in range(CAVE_NUMBERS):
 	cookie[str(i)] = cave_list[i].caveCopyCreator()
 # Storing player as a cookie
-
+cookie['player'] = Player.playerCopyCreator()
 print(cookie)
 
 # Creates list of rooms that are linked

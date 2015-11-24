@@ -53,6 +53,11 @@ def caveCopier(cave_list, morsel):
 	
 	cave_list.append(cave)
 
+
+def playerCopier(Player, morsel):
+	x = morsel.split(".")
+	Player.set_arrows(int(x[0]))
+	
 def cave_generation(cave_list, cave_list_copy):
     
     # List containing all the Locations for caves
@@ -216,7 +221,7 @@ cave_list = []
 
 for i in range(CAVE_NUMBERS - 1):
 	caveCopier(cave_list, cookie[str(i)].value)
-
+Player = Player.Player()
 cave_check = []
 cave_list_copy = []
 spawn_list = []
@@ -228,12 +233,12 @@ print("<html><body>")
 print("If at anytime you wish to quit, type quit or q<br />")
 
 # Variable to store what rooms the player can connect to
-#room_connection = get_player_route(Player, cave_list)
-#warning_message_check(Player, cave_list)
 goToRoom = form.getvalue('room')
-#Player.set_room(goToRoom)
-#print("You are in Room:", Player.get_room(), end="<br />")
-#print("You can travel to:", room_connection)
+Player.set_room(int(goToRoom))
+room_connection = get_player_route(Player, cave_list)
+#warning_message_check(Player, cave_list)
+print("You are in Room:", Player.get_room(), end="<br />")
+print("You can travel to:", room_connection)
 
 """print("You can shoot an arrow or move: ")
 # Gather user input if moving or shooting
