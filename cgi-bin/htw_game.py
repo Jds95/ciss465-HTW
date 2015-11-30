@@ -205,16 +205,13 @@ def game_over_check(Player, cave_list):
 
 # Function to check to see if teleport by bats was triggered
 def teleport_check(Player, cave_list):
+    copy_cave = cave_list[:]
     for item in cave_list:
-        if Player.get_room() == item.get_value():
-            if item.get_bat:
-                item_copy = item
-                copy_cave = cave_list[:]
+        if item.get_bat() == True:
+            if item.get_value() == Player.get_room():
                 copy_cave.remove(item)
-                random_cave = random.sample(copy_cave, 1)
-                Player.set_room(random_cave[0].get_value())
-                copy_cave.append(item_copy)
-
+                random_cave = random.choice(copy_cave)
+                Player.set_room(random_cave.get_value())
 
 # List containing all the Caves
 cave_list = []
