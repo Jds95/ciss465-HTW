@@ -9,9 +9,55 @@ import cgi
 import random
 import Cave
 import Player
+import os
+import http.cookies
 
 form = cgi.FieldStorage()
 
+cookie_string = os.environ.get('HTTP_COOKIE')
+
+if cookie_string == '':
+    output = "I don't see a cookie."
+else:
+    cookie = http.cookies.SimpleCookie()
+    cookie.load(cookie_string)
+
+def caveCopier(cave_list, morsel):
+	cave = Cave.Cave()
+	x = morsel.split(".")
+	cave.set_value(int(x[0]))
+
+    # Converts cave string into list of elements
+	x[1] = x[1].lstrip('[')
+	x[1] = x[1].rstrip(']')
+	x[1] = x[1].replace(' ', '')
+	x[1] = x[1].split(',')
+	cave.add_connection(int(x[1][0]))
+	cave.add_connection(int(x[1][1]))
+	cave.add_connection(int(x[1][2]))
+	
+	if x[2][0] == 'T':
+		cave.set_pit(True)
+	else:
+		cave.set_pit(False)
+	
+	if x[3][0] == 'T':
+		cave.set_bat(True)
+	else:
+		cave.set_bat(False)
+
+	if x[4][0] == 'T':
+		cave.set_wumpus(True)
+	else:
+		cave.set_wumpus(False)
+	
+	cave_list.append(cave)
+
+
+def playerCopier(Player, morsel):
+	x = morsel.split(".")
+	Player.set_arrows(int(x[0]))
+	
 def cave_generation(cave_list, cave_list_copy):
     
     # List containing all the Locations for caves
@@ -31,7 +77,7 @@ def cave_generation(cave_list, cave_list_copy):
         cave_list[i].set_value(random.choice(point_list))
         point_list.remove(cave_list[i].get_value())
 
-    cave_list_copgy = cave_list[:]
+    cave_list_copy = cave_list[:]
 
     # Set up inital dual way connections
     for i, item in enumerate(cave_list):
@@ -46,6 +92,8 @@ def cave_generation(cave_list, cave_list_copy):
         cave_list[(i + 2) % CAVE_NUMBERS].add_connection(item.get_value())
         cave_list_copy.remove(cave_list[(i + 2) % CAVE_NUMBERS])
         cave_list_copy.remove(item)
+
+	
     
 # Function to generate random pits
 def pit_generation(cave_list):
@@ -163,32 +211,70 @@ def teleport_check(Player, cave_list):
                 item_copy = item
                 copy_cave = cave_list[:]
                 copy_cave.remove(item)
-                random_cave = random.sample(copy_cave)
-                Player.set_room(random_cave.get_value())
+                random_cave = random.sample(copy_cave, 1)
+                Player.set_room(random_cave[0].get_value())
                 copy_cave.append(item_copy)
 
 
 # List containing all the Caves
 cave_list = []
+
+for i in range(CAVE_NUMBERS):
+	caveCopier(cave_list, cookie[str(i)].value)
+
+Player = Player.Player()
 cave_check = []
 cave_list_copy = []
 spawn_list = []
 
+goToRoom = form.getvalue('room')
+Player.set_room(int(goToRoom))
 # Create Player Variable/Object
-Player = Player.Player()
 print("Content-Type: text/html")
 print()
 print("<html><body>")
+teleport_check(Player, cave_list)
+game_over_check(Player, cave_list)
+
 print("If at anytime you wish to quit, type quit or q<br />")
 
 # Variable to store what rooms the player can connect to
 room_connection = get_player_route(Player, cave_list)
-warning_message_check(Player, cave_list)
-goToRoom = form.getvalue('room')
-Player.set_room(goToRoom)
+#warning_message_check(Player, cave_list)
 print("You are in Room:", Player.get_room(), end="<br />")
 print("You can travel to:", room_connection)
 
+# Function calls to generate the game and player
+"""cave_generation(cave_list, cave_list_copy)
+pit_generation(cave_list)
+bat_generation(cave_list, cave_list_copy)
+wumpus_generation(cave_list, cave_list_copy)
+player_start(cave_list, spawn_list)"""
+
+
+# Creates list of rooms that are linked
+room_connection = get_player_route(Player, cave_list)
+print('\n', "If at anytime you wish to quit, type quit or q<br />")
+print("""
+   <br />
+   <form method="get" action="/cgi-bin/htw_game.py">
+        Move to room number: <input type="text" name="room">
+        <input type="submit" value="Submit">
+    </form> 
+""")
+
+
+# Storing caves as a cookie
+for i in range(CAVE_NUMBERS):
+	print(i)
+	print(": ")
+	cookie[str(i)] = cave_list[i].caveCopyCreator()
+	print(cookie[str(i)])
+	print("<br />")
+
+print('</body></html>')
+# Storing player as a cookie
+cookie['player'] = Player.playerCopyCreator()
 """print("You can shoot an arrow or move: ")
 # Gather user input if moving or shooting
 decision=input("Which would you like to do?: ")
@@ -205,8 +291,6 @@ if (decision.lower() == "move" or decision == "m"):
     Player.clear_room()
     Player.set_room(user_input)
     teleport_check(Player, cave_list)
-    if game_over_check(Player, cave_list):
-        break
         
     # If choice was to shoot, gather input, valid check, game winning check
     if decision.lower() == "shoot" or decision == "s":

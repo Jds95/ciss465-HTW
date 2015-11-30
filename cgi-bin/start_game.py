@@ -5,10 +5,14 @@
 
 CAVE_NUMBERS = 20
 
+import http.cookies
 import cgi
 import random
 import Cave
 import Player
+import os
+
+cookie = http.cookies.SimpleCookie()
 
 def cave_generation(cave_list, cave_list_copy):
   
@@ -169,16 +173,22 @@ bat_generation(cave_list, cave_list_copy)
 wumpus_generation(cave_list, cave_list_copy)
 player_start(cave_list, spawn_list)
 
+# Storing caves as a cookie
+for i in range(CAVE_NUMBERS):
+	cookie[str(i)] = cave_list[i].caveCopyCreator()
+
+# Storing player as a cookie
+cookie['player'] = Player.playerCopyCreator()
+print(cookie)
+
 # Creates list of rooms that are linked
 room_connection = get_player_route(Player, cave_list)
 print('Content-type: text/html')
 print()
-
 print('<html><body>')
 print('\n', "If at anytime you wish to quit, type quit or q<br />")
 print("You are in Room:", Player.get_room(), end="<br />")
 print("You can travel to:", room_connection)
-
 print("""
    <br />
    <form method="get" action="/cgi-bin/htw_game.py">
@@ -186,6 +196,6 @@ print("""
         <input type="submit" value="Submit">
     </form> 
 """)
-
+print(cave_list[0].caveCopyCreator())
 print('</body></html>')
 
