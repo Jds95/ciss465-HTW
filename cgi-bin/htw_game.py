@@ -211,8 +211,8 @@ def teleport_check(Player, cave_list):
                 item_copy = item
                 copy_cave = cave_list[:]
                 copy_cave.remove(item)
-                random_cave = random.sample(copy_cave)
-                Player.set_room(random_cave.get_value())
+                random_cave = random.sample(copy_cave, 1)
+                Player.set_room(random_cave[0].get_value())
                 copy_cave.append(item_copy)
 
 
@@ -227,15 +227,18 @@ cave_check = []
 cave_list_copy = []
 spawn_list = []
 
+goToRoom = form.getvalue('room')
+Player.set_room(int(goToRoom))
 # Create Player Variable/Object
 print("Content-Type: text/html")
 print()
 print("<html><body>")
+teleport_check(Player, cave_list)
+game_over_check(Player, cave_list)
+
 print("If at anytime you wish to quit, type quit or q<br />")
 
 # Variable to store what rooms the player can connect to
-goToRoom = form.getvalue('room')
-Player.set_room(int(goToRoom))
 room_connection = get_player_route(Player, cave_list)
 #warning_message_check(Player, cave_list)
 print("You are in Room:", Player.get_room(), end="<br />")
@@ -262,12 +265,12 @@ print("""
 
 
 # Storing caves as a cookie
-"""for i in range(CAVE_NUMBERS):
+for i in range(CAVE_NUMBERS):
 	print(i)
 	print(": ")
 	cookie[str(i)] = cave_list[i].caveCopyCreator()
 	print(cookie[str(i)])
-	print("<br />")"""
+	print("<br />")
 
 print('</body></html>')
 # Storing player as a cookie
@@ -288,8 +291,6 @@ if (decision.lower() == "move" or decision == "m"):
     Player.clear_room()
     Player.set_room(user_input)
     teleport_check(Player, cave_list)
-    if game_over_check(Player, cave_list):
-        break
         
     # If choice was to shoot, gather input, valid check, game winning check
     if decision.lower() == "shoot" or decision == "s":
