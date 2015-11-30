@@ -176,6 +176,7 @@ player_start(cave_list, spawn_list)
 # Storing caves as a cookie
 for i in range(CAVE_NUMBERS):
 	cookie[str(i)] = cave_list[i].caveCopyCreator()
+
 # Storing player as a cookie
 cookie['player'] = Player.playerCopyCreator()
 print(cookie)

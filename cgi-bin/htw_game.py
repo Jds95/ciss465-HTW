@@ -219,8 +219,9 @@ def teleport_check(Player, cave_list):
 # List containing all the Caves
 cave_list = []
 
-for i in range(CAVE_NUMBERS - 1):
+for i in range(CAVE_NUMBERS):
 	caveCopier(cave_list, cookie[str(i)].value)
+
 Player = Player.Player()
 cave_check = []
 cave_list_copy = []
@@ -240,6 +241,37 @@ room_connection = get_player_route(Player, cave_list)
 print("You are in Room:", Player.get_room(), end="<br />")
 print("You can travel to:", room_connection)
 
+# Function calls to generate the game and player
+"""cave_generation(cave_list, cave_list_copy)
+pit_generation(cave_list)
+bat_generation(cave_list, cave_list_copy)
+wumpus_generation(cave_list, cave_list_copy)
+player_start(cave_list, spawn_list)"""
+
+
+# Creates list of rooms that are linked
+room_connection = get_player_route(Player, cave_list)
+print('\n', "If at anytime you wish to quit, type quit or q<br />")
+print("""
+   <br />
+   <form method="get" action="/cgi-bin/htw_game.py">
+        Move to room number: <input type="text" name="room">
+        <input type="submit" value="Submit">
+    </form> 
+""")
+
+
+# Storing caves as a cookie
+"""for i in range(CAVE_NUMBERS):
+	print(i)
+	print(": ")
+	cookie[str(i)] = cave_list[i].caveCopyCreator()
+	print(cookie[str(i)])
+	print("<br />")"""
+
+print('</body></html>')
+# Storing player as a cookie
+cookie['player'] = Player.playerCopyCreator()
 """print("You can shoot an arrow or move: ")
 # Gather user input if moving or shooting
 decision=input("Which would you like to do?: ")
