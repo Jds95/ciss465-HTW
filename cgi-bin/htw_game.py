@@ -208,7 +208,7 @@ def teleport_check(Player, cave_list):
     copy_cave = cave_list[:]
     for item in cave_list:
         if item.get_bat() == True:
-            if item.get_value() == Player.get_room():
+            while item.get_value() == Player.get_room():
                 copy_cave.remove(item)
                 random_cave = random.choice(copy_cave)
                 Player.set_room(random_cave.get_value())
