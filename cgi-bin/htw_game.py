@@ -144,6 +144,17 @@ def get_player_route(Player, cave_list):
         if item.get_value() == Player.get_room():
             return item.get_connection()
 
+def move_wumpus(cave_list):
+	for item in cave_list:
+		if item.get_wumpus() == True:
+			rooms = item.get_connection()
+			room = random.choice(rooms)
+			item.set_wumpus(False)
+			for ite in cave_list:
+				if ite.get_value() == room:
+					ite.set_wumpus(True)
+	
+
 
 # Function to check if arrow shot by player has proper pathing
 def valid_arrow_shot(Player, cave_list, shoot_list, done):
@@ -224,6 +235,7 @@ cave_check = []
 cave_list_copy = []
 spawn_list = []
 
+move_wumpus(cave_list)
 goToRoom = form.getvalue('room')
 Player.set_room(int(goToRoom))
 # Create Player Variable/Object
@@ -237,7 +249,7 @@ print("If at anytime you wish to quit, type quit or q<br />")
 
 # Variable to store what rooms the player can connect to
 room_connection = get_player_route(Player, cave_list)
-#warning_message_check(Player, cave_list)
+warning_message_check(Player, cave_list)
 print("You are in Room:", Player.get_room(), end="<br />")
 print("You can travel to:", room_connection)
 
@@ -251,7 +263,6 @@ player_start(cave_list, spawn_list)"""
 
 # Creates list of rooms that are linked
 room_connection = get_player_route(Player, cave_list)
-print('\n', "If at anytime you wish to quit, type quit or q<br />")
 print("""
    <br />
    <form method="get" action="/cgi-bin/htw_game.py">
@@ -285,8 +296,6 @@ if (decision.lower() == "move" or decision == "m"):
     if (user_input not in room_connection):
         continue
     # Set Player's current room to user input
-    Player.clear_room()
-    Player.set_room(user_input)
     teleport_check(Player, cave_list)
         
     # If choice was to shoot, gather input, valid check, game winning check
