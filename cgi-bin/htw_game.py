@@ -157,7 +157,8 @@ def move_wumpus(cave_list):
 
 
 # Function to check if arrow shot by player has proper pathing
-def valid_arrow_shot(Player, cave_list, shoot_list, done):
+def valid_arrow_shot(Player, cave_list, shoot_list):
+    global done
     arrow_path = []
     arrow_room = 0
     arrow_room += Player.get_room()
@@ -308,7 +309,7 @@ if (decision.lower() == "move" or decision == "m"):
             print("You shot an arrow in current room, you pick up the arrow")
             continue
         if len(shoot_list) < 5 and len(shoot_list) > 0:
-            valid_arrow_shot(Player, cave_list, shoot_list, done)
+            valid_arrow_shot(Player, cave_list, shoot_list)
         Player.lose_arrow()
         if Player.arrow_check() == 0:
             print("Out of arrows, game over")
