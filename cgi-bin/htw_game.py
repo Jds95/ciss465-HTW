@@ -236,9 +236,26 @@ cave_check = []
 cave_list_copy = []
 spawn_list = []
 
+choice = form.getvalue('choice')
+if (choice.lower() == "m"):
+	goToRoom = form.getvalue('room')
+	Player.set_room(int(goToRoom))
+
+if (choice.lower() == "s"):
+	shoot_list = []
+	user_input = form.getvalue('room')
+	for num in user_input.split():
+		shoot_list.append(int(num))
+	if len(shoot_list) == 1 and shoot_list[0] == Player.get_room():
+		print("You shot an arrow in current room, you pick up the arrow")
+	if len(shoot_list) < 5 and len(shoot_list) > 0:
+		valid_arrow_shot(Player, cave_list, shoot_list)
+	Player.lose_arrow()
+	if Player.arrow_check() == 0:
+		print("Out of arrows, game over")
+	done = True
+
 move_wumpus(cave_list)
-goToRoom = form.getvalue('room')
-Player.set_room(int(goToRoom))
 # Create Player Variable/Object
 print("Content-Type: text/html")
 print()
@@ -267,8 +284,9 @@ room_connection = get_player_route(Player, cave_list)
 print("""
    <br />
    <form method="get" action="/cgi-bin/htw_game.py">
-        Move to room number: <input type="text" name="room">
-        <input type="submit" value="Submit">
+       Enter your choice (Either (m)ove or (s)hoot): <input type="text" name="choice">
+       <br />Enter your room to move (or rooms to shoot) to: <input type="text" name = "room"> 
+		<input type="submit" value="Submit">
     </form> 
 """)
 
