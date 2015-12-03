@@ -8,7 +8,7 @@ class Player:
         
     # Function to set the player's room passed in by variable
     def set_room(self, room):
-        self.__room_location[0]= room
+        self.__room_location[0] = room
 
     def clear_room(self):
         self.__room_location = [0]

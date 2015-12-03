@@ -90,7 +90,7 @@ def player_start(cave_list, spawn_list):
             spawn_list.append(item)
     
     spawn_room = random.choice(spawn_list)
-    Player.set_room(spawn_room.get_value())
+    steve.set_room(spawn_room.get_value())
 
 # Function to return the routes the player can travel from current room
 def get_player_route(Player, cave_list):   
@@ -163,7 +163,7 @@ cave_list_copy = []
 spawn_list = []
 
 # Create Player Variable/Object
-Player = Player.Player()
+steve = Player.Player()
 
 
 # Function calls to generate the game and player
@@ -177,25 +177,27 @@ player_start(cave_list, spawn_list)
 for i in range(CAVE_NUMBERS):
 	cookie[str(i)] = cave_list[i].caveCopyCreator()
 
+
 # Storing player as a cookie
-cookie['player'] = Player.playerCopyCreator()
+cookie['player'] = steve.playerCopyCreator()
 print(cookie)
 
 # Creates list of rooms that are linked
-room_connection = get_player_route(Player, cave_list)
 print('Content-type: text/html')
+print(cookie)
 print()
 print('<html><body>')
+room_connection = get_player_route(steve, cave_list)
 print('\n', "If at anytime you wish to quit, type quit or q<br />")
-print("You are in Room:", Player.get_room(), end="<br />")
+print("You are in Room:", steve.get_room(), end="<br />")
 print("You can travel to:", room_connection)
 print("""
    <br />
    <form method="get" action="/cgi-bin/htw_game.py">
-        Move to room number: <input type="text" name="room">
-        <input type="submit" value="Submit">
+       Enter your choice (Either (m)ove or (s)hoot): <input type="text" name="choice">
+       <br />Enter your room to move (or rooms to shoot) to: <input type="text" name = "room"> 
+		<input type="submit" value="Submit">
     </form> 
 """)
-print(cave_list[0].caveCopyCreator())
 print('</body></html>')
 

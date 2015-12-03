@@ -57,6 +57,7 @@ def caveCopier(cave_list, morsel):
 def playerCopier(Player, morsel):
 	x = morsel.split(".")
 	Player.set_arrows(int(x[0]))
+	Player.set_room(int(x[2]))
 	
 def cave_generation(cave_list, cave_list_copy):
     
@@ -228,47 +229,56 @@ def teleport_check(Player, cave_list):
 # List containing all the Caves
 cave_list = []
 
+print(cookie)
 for i in range(CAVE_NUMBERS):
 	caveCopier(cave_list, cookie[str(i)].value)
 
-Player = Player.Player()
+steve = Player.Player()
+playerCopier(steve, cookie['player'].value)
+
+print("Content-Type: text/html")
+print()
+print("<html><body>")
+print("Before: ")
+print(cookie['player'])
+print(steve)
+
 cave_check = []
 cave_list_copy = []
 spawn_list = []
 
 choice = form.getvalue('choice')
+
+
 if (choice.lower() == "m"):
 	goToRoom = form.getvalue('room')
-	Player.set_room(int(goToRoom))
+	steve.set_room(int(goToRoom))
 
 if (choice.lower() == "s"):
 	shoot_list = []
 	user_input = form.getvalue('room')
 	for num in user_input.split():
 		shoot_list.append(int(num))
-	if len(shoot_list) == 1 and shoot_list[0] == Player.get_room():
+	if len(shoot_list) == 1 and shoot_list[0] == steve.get_room():
 		print("You shot an arrow in current room, you pick up the arrow")
 	if len(shoot_list) < 5 and len(shoot_list) > 0:
-		valid_arrow_shot(Player, cave_list, shoot_list)
-	Player.lose_arrow()
-	if Player.arrow_check() == 0:
+		valid_arrow_shot(steve, cave_list, shoot_list)
+	steve.lose_arrow()
+	if steve.arrow_check() == 0:
 		print("Out of arrows, game over")
-	done = True
+#		done = True
 
 move_wumpus(cave_list)
-# Create Player Variable/Object
-print("Content-Type: text/html")
-print()
-print("<html><body>")
-teleport_check(Player, cave_list)
-game_over_check(Player, cave_list)
 
-print("If at anytime you wish to quit, type quit or q<br />")
+# Create Player Variable/Object
+teleport_check(steve, cave_list)
+game_over_check(steve, cave_list)
+
 
 # Variable to store what rooms the player can connect to
-room_connection = get_player_route(Player, cave_list)
-warning_message_check(Player, cave_list)
-print("You are in Room:", Player.get_room(), end="<br />")
+room_connection = get_player_route(steve, cave_list)
+warning_message_check(steve, cave_list)
+print("<br /><br />You are in Room:", steve.get_room(), end="<br />")
 print("You can travel to:", room_connection)
 
 # Function calls to generate the game and player
@@ -280,7 +290,7 @@ player_start(cave_list, spawn_list)"""
 
 
 # Creates list of rooms that are linked
-room_connection = get_player_route(Player, cave_list)
+room_connection = get_player_route(steve, cave_list)
 print("""
    <br />
    <form method="get" action="/cgi-bin/htw_game.py">
@@ -293,15 +303,16 @@ print("""
 
 # Storing caves as a cookie
 for i in range(CAVE_NUMBERS):
-	print(i)
-	print(": ")
 	cookie[str(i)] = cave_list[i].caveCopyCreator()
+	print(str(i) + ": ")
 	print(cookie[str(i)])
 	print("<br />")
 
+cookie['player'] = steve.playerCopyCreator()
+#print(cookie)
+
 print('</body></html>')
 # Storing player as a cookie
-cookie['player'] = Player.playerCopyCreator()
 """print("You can shoot an arrow or move: ")
 # Gather user input if moving or shooting
 decision=input("Which would you like to do?: ")
