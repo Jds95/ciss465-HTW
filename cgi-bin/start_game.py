@@ -188,7 +188,7 @@ print(cookie)
 print()
 print('<html><body>')
 room_connection = get_player_route(steve, cave_list)
-print('\n', "If at anytime you wish to quit, type quit or q<br />")
+warning_message_check(steve, cave_list)
 print("You are in Room:", steve.get_room(), end="<br />")
 print("You can travel to:", room_connection)
 print("""

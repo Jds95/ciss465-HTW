@@ -13,7 +13,6 @@ import os
 import http.cookies
 
 form = cgi.FieldStorage()
-
 cookie_string = os.environ.get('HTTP_COOKIE')
 
 if cookie_string == '':
@@ -158,7 +157,7 @@ def move_wumpus(cave_list):
 
 
 # Function to check if arrow shot by player has proper pathing
-def valid_arrow_shot(Player, cave_list, shoot_list):
+def valid_arrow_shot(Player, cave_list, shoot_list, output):
     global done
     arrow_path = []
     arrow_room = 0
@@ -171,11 +170,11 @@ def valid_arrow_shot(Player, cave_list, shoot_list):
                 arrow_path = item.get_connection()
         # Boolean to see if arrow shot was correct
         if shoot_list[i] not in arrow_path:
-            print("Shot failed")
+            output += "Shot failed"
             return False
         else:
             arrow_room = shoot_list[i]
-            print("Shot succeeded")
+            output += "Shot succeeded"
 
     # Check if Wumpus was shot by arrow
     for item in cave_list:
@@ -228,7 +227,8 @@ def teleport_check(Player, cave_list):
 
 # List containing all the Caves
 cave_list = []
-
+game_over = False
+output = ""
 print(cookie)
 for i in range(CAVE_NUMBERS):
 	caveCopier(cave_list, cookie[str(i)].value)
@@ -236,9 +236,9 @@ for i in range(CAVE_NUMBERS):
 steve = Player.Player()
 playerCopier(steve, cookie['player'].value)
 
-print("Content-Type: text/html")
-print()
-print("<html><body>")
+#print("Content-Type: text/html")
+#print()
+#print("<html><body>")
 print("Before: ")
 print(cookie['player'])
 print(steve)
@@ -260,26 +260,25 @@ if (choice.lower() == "s"):
 	for num in user_input.split():
 		shoot_list.append(int(num))
 	if len(shoot_list) == 1 and shoot_list[0] == steve.get_room():
-		print("You shot an arrow in current room, you pick up the arrow")
+		output += "You shot an arrow in current room, you pick up the arrow"
 	if len(shoot_list) < 5 and len(shoot_list) > 0:
-		valid_arrow_shot(steve, cave_list, shoot_list)
+		valid_arrow_shot(steve, cave_list, shoot_list, output)
 	steve.lose_arrow()
 	if steve.arrow_check() == 0:
-		print("Out of arrows, game over")
+		output += "<br />Out of arrows, game over"
+		game_over = True
 #		done = True
 
 move_wumpus(cave_list)
 
+output += str(steve)
+output += "<br />"
 # Create Player Variable/Object
 teleport_check(steve, cave_list)
-game_over_check(steve, cave_list)
 
 
 # Variable to store what rooms the player can connect to
 room_connection = get_player_route(steve, cave_list)
-warning_message_check(steve, cave_list)
-print("<br /><br />You are in Room:", steve.get_room(), end="<br />")
-print("You can travel to:", room_connection)
 
 # Function calls to generate the game and player
 """cave_generation(cave_list, cave_list_copy)
@@ -288,12 +287,32 @@ bat_generation(cave_list, cave_list_copy)
 wumpus_generation(cave_list, cave_list_copy)
 player_start(cave_list, spawn_list)"""
 
+for i in range(CAVE_NUMBERS):
+	cookie[str(i)] = cave_list[i].caveCopyCreator()
+	print(str(i) + ": ")
+	print(cookie[str(i)])
+	print("<br />")
+
+cookie['player'] = steve.playerCopyCreator()
+print("<br /> player: ")
+print(cookie['player'])
+
 
 # Creates list of rooms that are linked
 room_connection = get_player_route(steve, cave_list)
-print("""
-   <br />
-   <form method="get" action="/cgi-bin/htw_game.py">
+print("Content-Type: text/html")
+print()
+print("<html><body>")
+print(output)
+if game_over == False:
+	game_over = game_over_check(steve, cave_list)
+if game_over == False:
+	warning_message_check(steve, cave_list)
+	print("<br /><br />You are in Room:", steve.get_room(), end="<br />")
+	print("You can travel to:", room_connection)
+	print("""
+   		<br />
+   		<form method="get" action="/cgi-bin/htw_game.py">
        Enter your choice (Either (m)ove or (s)hoot): <input type="text" name="choice">
        <br />Enter your room to move (or rooms to shoot) to: <input type="text" name = "room"> 
 		<input type="submit" value="Submit">
@@ -302,15 +321,6 @@ print("""
 
 
 # Storing caves as a cookie
-for i in range(CAVE_NUMBERS):
-	cookie[str(i)] = cave_list[i].caveCopyCreator()
-	print(str(i) + ": ")
-	print(cookie[str(i)])
-	print("<br />")
-
-cookie['player'] = steve.playerCopyCreator()
-#print(cookie)
-
 print('</body></html>')
 # Storing player as a cookie
 """print("You can shoot an arrow or move: ")

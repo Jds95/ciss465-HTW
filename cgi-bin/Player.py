@@ -1,4 +1,4 @@
-# Class for Adventure/Player
+# Class for Player
 class Player:
     # Constructor sets the arrows, boolean for arrows, and room location
     def __init__(self):
