@@ -29,7 +29,8 @@ def cave_generation(cave_list, cave_list_copy):
         cave_list[i].set_value(random.choice(point_list))
         point_list.remove(cave_list[i].get_value())
 
-    cave_list_copy = cave_list[:]
+
+cave_list_copy = cave_list[:]
 
     # Set up inital dual way connections
     for i, item in enumerate(cave_list):
@@ -99,7 +100,8 @@ def get_player_route(Player, cave_list):
 def valid_arrow_shot(Player, cave_list, shoot_list):
     global done
     arrow_path = []
-    arrow_room = Player.get_room()
+    arrow_room = 0
+    arrow_room += Player.get_room()
     # Loop to run through length of shoot list
     for i in range(len(shoot_list)):
         for item in cave_list:
@@ -131,11 +133,11 @@ def warning_message_check(Player, cave_list):
     for i in range(len(connecting_room)):
         for item in cave_list:
             if item.get_value() == connecting_room[i]:
-                if item.get_pit() == True:
+                if item.get_pit():
                     item.pit_warning()
-                if item.get_bat() == True:
+                if item.get_bat():
                     item.bat_warning()
-                if item.get_wumpus() == True:
+                if item.get_wumpus():
                     item.wumpus_warning()
 
 # Function to check if player went into room with pit/wumpus
@@ -158,7 +160,6 @@ def teleport_check(Player, cave_list):
                 copy_cave.remove(item)
                 random_cave = random.choice(copy_cave)
                 Player.set_room(random_cave.get_value())
-                print("Bats flew you to a randoom room")
 
 # List containing all the Caves
 cave_list = []
@@ -182,12 +183,12 @@ player_start(cave_list, spawn_list)
 done = False
 
 print('\n', "If at anytime you wish to quit, type quit or q\n")
-warning_message_check(Player, cave_list)
- 
+
 # Game Loop
 while not done:
     # Variable to store what rooms the player can connect to
     room_connection = get_player_route(Player, cave_list)
+    warning_message_check(Player, cave_list)
     print("You are in Room:", Player.get_room(), end=" ")
     print("You can travel to:", room_connection)
     
@@ -206,7 +207,6 @@ while not done:
         # Set Player's current room to user input
         Player.set_room(user_input)
         teleport_check(Player, cave_list)
-        warning_message_check(Player, cave_list) 
         if game_over_check(Player, cave_list):
             done = True
         
